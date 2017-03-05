@@ -4,7 +4,148 @@
     <meta charset="utf-8">
     <title>Javascript模拟队列</title>
   </head>
+  <style media="screen">
+    .container{
+      margin-left: auto;
+      margin-right: auto;
+      width: 300px;
+      height: 300px;
+    }
+    .queue{
+      min-width: 30px;
+      background: red;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      float: left;
+      margin-left: 5px;
+    }
+  </style>
   <body>
-    
+    <div class="container">
+      <form>
+        <input type="text" name="name" value="" id="inputValue">
+      </form>
+      <button type="button" name="button" id="leftInt">左侧入</button>
+      <button type="button" name="button" id="rightInt">右侧入</button>
+      <button type="button" name="button" id="leftOut">左侧出</button>
+      <button type="button" name="button" id="rightOut">右侧出</button>
+      <div id="queueList">
+
+      </div>
+    </div>
   </body>
+  <script type="application/javascript">
+    (function() {
+      var leftInt=document.getElementById('leftInt'),
+          rightInt=document.getElementById('rightInt'),
+          leftOut=document.getElementById('leftOut'),
+          rightOut=document.getElementById('rightOut'),
+          input=document.getElementById('inputValue'),
+          queueList=document.getElementById('queueList');
+          arr=[];
+
+      //操作DOM，显示队列
+      var creatQueueDom={
+
+        createLeftDom: function (inputValue){
+            var item=document.createElement('div');
+            item.className='queue';
+            item.innerHTML= inputValue;
+            queueList.insertBefore(item,queueList.firstChild);
+        },
+
+        createRightDom: function (inputValue){
+            var item=document.createElement('div');
+            item.className='queue';
+            item.innerHTML= inputValue;
+            queueList.appendChild(item);
+        }
+      }
+
+      //删除事件,移除Dom 及 对应队列
+      function deleteQueueItem(){
+
+        var queueNodes=document.getElementsByClassName('queue');
+
+        for(var i = 0;i < queueNodes.length;i++){
+
+          //设定闭包
+          (function deleteQueueDom(i){
+            queueNodes[i].onclick=function (){
+                queueList.removeChild(this);
+                arr.splice(i,1);//删除队列指定元素
+            }
+          })(i);
+        }
+      }
+
+      //封装对象 四类方法
+      var operation={
+          leftIntValue: function (inputValue) {
+
+                arr.unshift(inputValue);
+                creatQueueDom.createLeftDom(inputValue);
+          },
+
+          rightIntValue: function (inputValue) {
+
+                arr.push(inputValue);
+                creatQueueDom.createRightDom(inputValue);
+          },
+
+          leftOutValue: function (){
+
+              var outValue=arr.shift();
+              alert(outValue);
+          },
+
+          rightOutValue: function (){
+
+              var outValue=arr.pop();
+              alert(outValue);
+          }
+      };
+
+      //绑定调用方法
+      leftInt.onclick=function () {
+
+        var inputValue=+input.value;
+        if((typeof inputValue === 'number')){
+
+              operation.leftIntValue(inputValue);
+              deleteQueueItem();
+          }else{
+              alert('please confirm the type of data entered!');
+          }
+        };
+
+      rightInt.onclick=function (){
+
+        var inputValue=+input.value;
+        if((typeof inputValue === 'number')){
+
+            operation.rightIntValue(inputValue);
+            deleteQueueItem();
+          }else{
+              alert('please confirm the type of data entered!');
+          }
+        };
+
+      leftOut.onclick=function (){
+
+          var inputValue=input.value;
+          operation.leftOutValue(inputValue);
+          deleteQueueItem();
+      };
+
+      rightOut.onclick=function (){
+
+          var inputValue=input.value;
+          operation.rightOutValue(inputValue);
+          deleteQueueItem();
+      };
+    }());
+  </script>
 </html>
