@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Javascript可视化排序</title>
+  </head>
+  <style media="screen">
+    .container{
+      margin-left: auto;
+      margin-right: auto;
+      width: 300px;
+      height: 300px;
+    }
+    #queueList{
+      width: 100%;
+      height:200px;
+      margin-top: 50px;
+      background: black;
+    }
+    .queue{
+      min-width: 30px;
+      background: orange;
+      font-size: 11px;
+      text-align: center;
+      float: left;
+      margin-left: 5px;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <form>
+        <input type="text" name="name" value="" id="inputValue">
+      </form>
+      <button type="button" name="button" id="leftInt">左侧入</button>
+      <button type="button" name="button" id="rightInt">右侧入</button>
+      <button type="button" name="button" id="leftOut">左侧出</button>
+      <button type="button" name="button" id="rightOut">右侧出</button>
+      <button type="button" name="button" id="resort">排序</button>
+      <div id="queueList"></div>
+    </div>
+  </body>
+  <script type="application/javascript">
+    (function() {
+      var leftInt=document.getElementById('leftInt'),
+          rightInt=document.getElementById('rightInt'),
+          leftOut=document.getElementById('leftOut'),
+          rightOut=document.getElementById('rightOut'),
+          input=document.getElementById('inputValue'),
+          queueList=document.getElementById('queueList');
+          resort=document.getElementById('resort');
+          arr=[];
+
+      //操作DOM，显示队列
+      var creatQueueDom={
+
+        createLeftDom: function (inputValue){
+            var item=document.createElement('div');
+            item.className='queue';
+            item.innerHTML=inputValue;
+            item.style.width=10 + 'px';
+            item.style.height= inputValue + 'px';
+            queueList.insertBefore(item,queueList.firstChild);
+        },
+
+        createRightDom: function (inputValue){
+            var item=document.createElement('div');
+            item.className='queue';
+            item.innerHTML= inputValue;
+            item.style.width=10 + 'px';
+            item.style.height= inputValue + 'px';
+            queueList.appendChild(item);
+        }
+      }
+
+      //删除事件,移除Dom 及 对应队列
+      function deleteQueueItem(){
+
+        var queueNodes=document.getElementsByClassName('queue');
+
+        for(var i = 0;i < queueNodes.length;i++){
+
+          //设定闭包
+          (function deleteQueueDom(i){
+            queueNodes[i].onclick=function (){
+                queueList.removeChild(this);
+                arr.splice(i,1);//删除队列指定元素
+            }
+          })(i);
+        }
+      }
+
+      //封装对象 五类方法
+      var operation={
+          leftIntValue: function (inputValue) {
+
+                arr.unshift(inputValue);
+                creatQueueDom.createLeftDom(inputValue);
+          },
+
+          rightIntValue: function (inputValue) {
+
+                arr.push(inputValue);
+                creatQueueDom.createRightDom(inputValue);
+          },
+
+          leftOutValue: function (){
+
+              var outValue=arr.shift();
+              alert(outValue);
+          },
+
+          rightOutValue: function (){
+
+              var outValue=arr.pop();
+              alert(outValue);
+          },
+
+          resort: function (){  //冒泡排序
+            var temp;
+            for(var i = 0;i < arr.length;i++){
+                for(var j = 0;j < arr.length - 1 - i;j++){
+                    if(arr[j] < arr[j+1]){
+                        temp = arr[j];
+                        arr[j] = arr[j+1];
+                        arr[j+1] = temp;
+                        setTimeout((function (j){
+                        queueList.insertBefore(queueList.childNodes[j+1],queueList.childNodes[j]);
+                      }(j)),5000);
+                    }
+                }
+            }
+          }
+      };
+
+      //绑定调用方法
+      leftInt.onclick=function () {
+
+        var inputValue=+input.value;
+        if((typeof inputValue === 'number')&&((inputValue< 100)&&( inputValue > 10))&&(arr.length < 60)){
+
+              operation.leftIntValue(inputValue);
+              deleteQueueItem();
+          }else{
+              alert('please confirm the type or value or the Queue length of data entered!');
+          }
+        };
+
+      rightInt.onclick=function (){
+
+        var inputValue=+input.value;
+        if((typeof inputValue === 'number')&&((inputValue < 100)&&( inputValue > 10))){
+
+            operation.rightIntValue(inputValue);
+            deleteQueueItem();
+          }else{
+              alert('please confirm the type or value or the Queue length of data entered!');
+          }
+        };
+
+      leftOut.onclick=function (){
+
+          var inputValue=input.value;
+          operation.leftOutValue(inputValue);
+          deleteQueueItem();
+      };
+
+      rightOut.onclick=function (){
+
+          var inputValue=input.value;
+          operation.rightOutValue(inputValue);
+          deleteQueueItem();
+      };
+
+      resort.onclick=function (){
+        operation.resort();
+      }
+    }());
+  </script>
+</html>
