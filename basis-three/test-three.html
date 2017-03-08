@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Javascript可视化排序</title>
+  </head>
+  <style media="screen">
+    .container{
+      margin-left: auto;
+      margin-right: auto;
+      width: 300px;
+      height: 300px;
+    }
+    #queueList{
+      width: 100%;
+      height:200px;
+      margin-top: 50px;
+      background: black;
+    }
+    .queue{
+      min-width: 50px;
+      min-height: 30px;
+      background: orange;
+      font-size: 16px;
+      text-align: center;
+      float: left;
+      margin-left: 5px;
+    }
+  </style>
+  <body>
+    <div class="container">
+        <p>文本录入</p>
+        <textarea name="name" rows="5" cols="40" id="inputValue"></textarea>
+        <button type="button" name="button" id="checkInput">录入</button>
+        <p>查询文本录入</p>
+        <input type="text" name="name" value="" id="findValue">
+        <button type="button" name="button" id="search">查询</button>
+      <div id="queueList"></div>
+    </div>
+  </body>
+  <script type="application/javascript">
+    (function() {
+      var input=document.getElementById('inputValue'),
+          find=document.getElementById('findValue'),
+          queueList=document.getElementById('queueList'),
+          checkInput=document.getElementById('checkInput'),
+          search=document.getElementById('search'),
+          arr=[];
+
+      var operation={
+
+          getInputValue: function (){
+              var length=input.value.length, //获取赋值，避免循环中获取，提高效率
+                  value=input.value;
+
+                  //调用split()方法，分割字符串，返回给数组
+                  arr=value.split(/[\s\n\r\，\,\、\t\ ]/);
+          },
+
+          creatValueDom: function (inputValue){
+            var valueDom=document.createElement('div');
+
+                valueDom.className='queue';
+                valueDom.innerHTML=inputValue;
+                queueList.appendChild(valueDom);
+          },
+
+          searchString: function (findValue){
+            var findItem="/." + findValue + "/";
+
+            for(var i=0; i< arr.length; i++){
+                  console.log(typeof arr[i])
+                  console.log(arr[i].search(findValue));
+                  if(arr[i].search(findValue) == 0){
+                    (function (i){
+                      queueList.childNodes[i].style.background='green';
+                    })(i);
+                  }
+                }
+          }
+      };
+
+      checkInput.onclick=function (){
+
+          operation.getInputValue(); //获取textarea的值，存入数组
+          for(var i = 0;i < arr.length;i++ ){
+
+              operation.creatValueDom(arr[i]);
+          }
+      };
+
+      search.onclick=function (){
+          var findValue=find.value;
+          operation.searchString(findValue);
+      }
+    }());
+  </script>
+</html>
