@@ -46,8 +46,10 @@
           leftOut=document.getElementById('leftOut'),
           rightOut=document.getElementById('rightOut'),
           input=document.getElementById('inputValue'),
-          queueList=document.getElementById('queueList');
-          resort=document.getElementById('resort');
+          queueList=document.getElementById('queueList'),
+          resort=document.getElementById('resort'),
+          timer=null,
+          snapshots=[], //手动设定快照，存储排序过程
           arr=[];
 
       //操作DOM，显示队列
@@ -116,19 +118,34 @@
           },
 
           resort: function (){  //冒泡排序
-            var temp;
+            var temp=0;
             for(var i = 0;i < arr.length;i++){
                 for(var j = 0;j < arr.length - 1 - i;j++){
                     if(arr[j] < arr[j+1]){
                         temp = arr[j];
                         arr[j] = arr[j+1];
                         arr[j+1] = temp;
-                        setTimeout((function (j){
-                        queueList.insertBefore(queueList.childNodes[j+1],queueList.childNodes[j]);
-                      }(j)),5000);
+                        snapshots.push(JSON.parse(JSON.stringify(arr))); //记录快照
                     }
                 }
-            }
+            };
+
+            timer=setInterval(operation.painting,500);
+          },
+
+          painting: function (){
+             var bars = [].slice.call(document.querySelectorAll('.queue')), //将队列元素转化为数组对象
+                 snapshot=snapshots.shift() || [];
+
+              if(snapshot.length != 0){
+                  for(var i=0; i<bars.length; i++){
+                     bars[i].innerHTML = snapshot[i];
+                     bars[i].style.height = snapshot[i] + 'px';
+                  };
+              }else{
+                  clearInterval(timer);
+                  return;
+              };
           }
       };
 
@@ -173,7 +190,7 @@
 
       resort.onclick=function (){
         operation.resort();
-      }
+      };
     }());
   </script>
 </html>
