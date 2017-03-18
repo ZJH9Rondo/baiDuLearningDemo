@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>二叉树遍历的可视化</title>
+	<style type="text/css">
+		*{margin: 0px; padding: 0px;}
+		.btn{
+			width: 310px;
+			margin: 20px auto;
+			border: none;
+		}
+		button{
+			padding: 8px;
+			font-size: 1.1rem;
+			font-family: '楷体';
+			background-color: #800000;
+			color: #fff;
+			cursor:pointer;
+			border-radius: 10px;
+			border-color: #000;
+		}
+		div{
+			border: 1px solid #800000;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+		.root{
+			margin: 20px auto;
+			width: 800px;
+			height: 400px;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-around;
+			align-items: center;
+		}
+		.child-1{
+			width: 380px;
+			height: 360px;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-around;
+			align-items: center;
+		}
+		.child-2{
+			width: 160px;
+			height: 320px;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-around;
+			align-items: center;
+		}
+		.child-3{
+			width: 50px;
+			height: 280px;
+		}
+	</style>
+</head>
+<body>
+	<div class="btn">
+		<button id="preorder">前序遍历</button>
+		<button id="inorder">中序遍历</button>
+		<button id="postorder">后序遍历</button>
+	</div>
+	<div class="root" id="root">1
+		<div class="child-1">2
+			<div class="child-2">4
+				<div class="child-3">8
+				</div>
+				<div class="child-3">9
+				</div>
+			</div>
+			<div class="child-2">5
+				<div class="child-3">10
+				</div>
+				<div class="child-3">11
+				</div>
+			</div>
+		</div>
+		<div class="child-1">3
+			<div class="child-2">6
+				<div class="child-3">12
+				</div>
+				<div class="child-3">13
+				</div>
+			</div>
+			<div class="child-2">7
+				<div class="child-3">14
+				</div>
+				<div class="child-3">15
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+(function (){
+	var divlist=[];				//存储最终节点顺序的数组
+
+	//添加事件函数
+	function addEvent(obj,ev,fun){
+		if(obj.addEventListener){
+			obj.addEventListener(ev,fun,false);
+		}else if(obj.attachEvent){
+			obj.attachEvent('on'+ev,fun);
+		}else{
+			obj['on'+ev]=fun;
+		}
+	}
+
+	//阻止默认函数
+	function stopEvent(e){
+		var ev=e||window.event;
+
+		if(ev.preventDefault){
+				ev.preventDefault();
+		}else{
+				ev.returnValue=false;//ie
+		}
+	}
+
+	//前序遍历
+	function preorder(node){
+		if(!!node){//转换为布尔值
+				divlist.push(node);
+				console.log(node.innerHTML);
+				preorder(node.firstElementChild);
+				preorder(node.lastElementChild);
+			}
+	}
+
+	//中序遍历
+	function inorder(node){
+		if(!!node){
+			inorder(node.firstElementChild);
+			divlist.push(node);
+			inorder(node.lastElementChild);
+		}
+	}
+
+	//后序遍历
+	function postorder(node){
+		if(!!node){
+			postorder(node.firstElementChild);
+			postorder(node.lastElementChild);
+			divlist.push(node);
+		}
+	}
+
+	//重置函数
+	function resetAll(){
+			divlist.length=0;
+	}
+
+	//遍历可视化
+	//按照数组的顺序，每隔0.5s依次改变相应div的背景颜色
+	function changeColor(){
+		var odiv=document.getElementsByTagName('div');
+
+		for(var i=0,len=odiv.length;i<len;i++){
+
+				odiv[i].style.backgroundColor='#fff';
+		}
+
+		var i=-1,
+				len=divlist.length;
+
+		timer=setInterval(function(){
+			i++;
+			if(i==len){
+				clearInterval(timer);
+
+				divlist[len-1].style.backgroundColor='#fff';
+				resetAll();
+				return;
+			}
+			if(i==0){
+					divlist[i].style.backgroundColor='#228B22';
+			}
+			else{
+					divlist[i-1].style.backgroundColor='#fff';
+					divlist[i].style.backgroundColor='#228B22';
+			}
+		},500);
+	}
+
+	var opreorder=document.getElementById('preorder'),
+			oinorder=document.getElementById('inorder'),
+			opostorder=document.getElementById('postorder'),
+			oroot=document.getElementById('root');
+
+	//前序遍历可视化
+	addEvent(opreorder,'click',function(e){
+		stopEvent(e);
+		preorder(oroot);
+		changeColor();
+	});
+
+	//中序遍历可视化
+	addEvent(oinorder,'click',function(e){
+		stopEvent(e);
+		inorder(oroot);
+		changeColor();
+	});
+
+	//后序遍历可视化
+	addEvent(opostorder,'click',function(e){
+		stopEvent(e);
+		postorder(oroot);
+		changeColor();
+
+	});
+})();
+</script>
+</html>

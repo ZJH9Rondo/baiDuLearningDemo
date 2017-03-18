@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>表单验证-1</title>
+    <style media="screen">
+      .container{
+        width: 500px;
+        height: 500px;
+        margin: 50px auto auto auto;
+        border: 1px solid black;
+      }
+      .input-message{
+        margin: 30px;
+        width: 200px;
+        height: 30px;
+        border-radius: 5px;
+        border: 1px solid #eee;
+      }
+      .checkText{
+        width: 60px;
+        height: 40px;
+        color: white;
+        background: rgba(47,120,185,1);
+        border: 0;
+      }
+      .tip{
+        width: 200px;
+        height: 15px;
+        list-style: none;
+        padding-left: 30px;
+        margin-top: -30px;
+      }
+      /*
+        验证提示信息样式表
+        */
+      .input-Right{
+        border: 1px solid green;
+      }
+      .input-Wrong{
+        border: 1px solid red;
+      }
+      .right{
+        color: green;
+      }
+      .wrong{
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form id="formDesk">
+        <input type="text" name="name" value="" class="input-message">
+        <button type="button" name="verify" class="checkText" id="check-one">验证</button>
+        <input type="text" name="name" value="" class="input-message">
+        <button type="button" name="verify" class="checkText" id="check-two">验证</button>
+        <input type="text" name="name" value="" class="input-message">
+        <button type="button" name="verify" class="checkText" id="check-three">验证</button>
+      </form>
+    </div>
+  </body>
+  <script type="text/javascript">
+    (function (){
+        var formDesk=document.getElementById('formDesk'),
+            checkOne=document.getElementById('check-one'),
+            checkTwo=document.getElementById('check-two'),
+            checkThree=document.getElementById('check-three');
+
+        var validation={
+            //根据字符长度验证
+            valueLength: function (){
+                var lengthItem=formDesk.childNodes[1],
+                    tips=document.createElement('li');
+
+                    formDesk.insertBefore(tips,formDesk.childNodes[5]);
+                if(lengthItem.value.length > 4 && lengthItem.value.length < 16){
+
+                    tips.innerHTML='字符长度合格！';
+                    tips.className='tip right';
+                    lengthItem.className='input-message input-Right';
+                }else{
+                    tips.innerHTML='请输入长度为4~16的字符！';
+                    tips.className='tip wrong';
+                    lengthItem.className='input-message input-Wrong';
+                }
+            }
+        };
+
+        checkOne.onclick=function (){
+            validation.valueLength();
+        }
+    })();
+  </script>
+</html>

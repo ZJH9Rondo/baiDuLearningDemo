@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>可视化遍历二叉树</title>
+  </head>
+  <style media="screen">
+    .container{
+      width: 600px;
+      height: 400px;
+      border: 1px solid black;
+      margin: 100px auto auto auto;
+    }
+    .left-node-1,.left-node-2,.left-node-3{
+      margin-left: 20px;
+      margin-top: 10px;
+      border: 1px solid black;
+      float: left;
+    }
+    .right-node-1,.right-node-2,.right-node-3{
+      margin-right: 20px;
+      margin-top: 10px;
+      border: 1px solid black;
+      float: right;
+    }
+    .left-node-1{
+      width: 270px;
+      height: 380px;
+    }
+    .left-node-2{
+      width: 100px;
+      height: 360px;
+    }
+    .left-node-3{
+      width: 20px;
+      height: 340px;
+    }
+    .right-node-1{
+      width: 270px;
+      height: 380px;
+    }
+    .right-node-2{
+      width: 100px;
+      height: 360px;
+    }
+    .right-node-3{
+      width: 20px;
+      height: 340px;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="left-node-1">
+        <div class="left-node-2">
+          <div class="left-node-3"></div>
+          <div class="right-node-3"></div>
+        </div>
+        <div class="right-node-2">
+          <div class="left-node-3"></div>
+          <div class="right-node-3"></div>
+        </div>
+      </div>
+      <div class="right-node-1">
+        <div class="left-node-2">
+          <div class="left-node-3"></div>
+          <div class="right-node-3"></div>
+        </div>
+        <div class="right-node-2">
+          <div class="left-node-3"></div>
+          <div class="right-node-3"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    (function (){
+        var divs = document.getElementsByTagName('div'),
+            nodes = [];    //存储遍历过的结点
+
+        /*
+        *  基于对象动态构造二叉树
+        */
+        function createNode(data,left,right){
+            this.data = data;
+            this.left = left;
+            this.right = right;
+        }
+
+        //初始化二叉树函数
+        function createTree() {
+            this.root = null;
+            this.insertNode = insertNode;
+        }
+
+        //插入结点数据
+        function insertNode(data){
+            var node = new createNode(data,null,null);
+
+            if(this.root == null){
+                this.root = node;
+            }else{
+                var preNode = this.root;
+                while (true) {
+                  if(preNode.data > data){
+                    if(preNode.left === null){  // '==' 和 ‘===’ 的区别
+                      preNode.left = node;
+                      break;
+                    }
+                    preNode = preNode.left;
+                  }else{
+                    if(preNode.right === null){
+                      preNode.right = node;
+                      break;
+                    }
+                    preNode = preNode.right;
+                  }
+                }
+            }
+        }
+
+        //可视化渲染
+        function showSort(){
+              var inNode;
+
+                var timer = setInterval( function (){
+                    inNode = nodes.shift();
+                    for( var i = 0;i < divs.length; i++){
+                        if( divs[i].firstChild.nodeValue === inNode && inNode != null){
+                          console.log(divs[i].firstChild.nodeValue,inNode.data);
+                          divs[i].style.background = 'green';
+                        }else{
+                          divs[i].style.background = 'gold';
+                        }
+                    }
+                },1000);
+
+        }
+
+        //中序遍历二叉树
+        function midSort(){
+            var tree = new createTree(),  //实例化
+                sta = [],
+                temp;
+
+            for(var i = 0;i < divs.length; i++){
+                  if( i === 0){
+                    tree.insertNode(divs[i]);
+                  }else{
+                    tree.insertNode(divs[i].firstChild);
+                  }
+              }
+
+            temp = tree.root;
+            if( temp === null ){
+              alert('The tree don\'t have Node!');
+              return ;
+            }
+
+            while ( temp != null || sta.length !== 0){
+                while ( temp != null ){
+                    sta.push(temp);
+                    temp = temp.left;
+                }
+                if ( sta.length !== 0){
+                    temp = sta.pop();
+                    nodes.push(temp);
+                    temp = temp.right;
+                }
+              }
+              console.log(nodes);
+              showSort();
+          }
+
+          midSort();
+    })();
+  </script>
+</html>
