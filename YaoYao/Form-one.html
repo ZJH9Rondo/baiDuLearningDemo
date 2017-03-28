@@ -29,7 +29,7 @@
         height: 15px;
         list-style: none;
         padding-left: 30px;
-        margin-top: -30px;
+        margin-top: -20px;
       }
       /*
         验证提示信息样式表
@@ -51,11 +51,11 @@
   <body>
     <div class="container">
       <form id="formDesk">
-        <input type="text" name="name" value="" class="input-message">
+        <input type="text" name="name" class="input-message" id="valueLength">
         <button type="button" name="verify" class="checkText" id="check-one">验证</button>
-        <input type="text" name="name" value="" class="input-message">
+        <input type="text" name="name" class="input-message" id="valueNull">
         <button type="button" name="verify" class="checkText" id="check-two">验证</button>
-        <input type="text" name="name" value="" class="input-message">
+        <input type="text" name="name" class="input-message" id="valueEnZh">
         <button type="button" name="verify" class="checkText" id="check-three">验证</button>
       </form>
     </div>
@@ -70,26 +70,107 @@
         var validation={
             //根据字符长度验证
             valueLength: function (){
-                var lengthItem=formDesk.childNodes[1],
-                    tips=document.createElement('li');
+                var textLength = document.getElementById('valueLength'),
+                    tip = document.createElement('li');
 
-                    formDesk.insertBefore(tips,formDesk.childNodes[5]);
-                if(lengthItem.value.length > 4 && lengthItem.value.length < 16){
+                tip.className = null;
+                checkOne.addEventListener('click',function (){
+                  var stringValue = textLength.value,
+                      len = 0;
 
-                    tips.innerHTML='字符长度合格！';
-                    tips.className='tip right';
-                    lengthItem.className='input-message input-Right';
-                }else{
-                    tips.innerHTML='请输入长度为4~16的字符！';
-                    tips.className='tip wrong';
-                    lengthItem.className='input-message input-Wrong';
-                }
+                  for(var i = 0;i < stringValue.length; i++){
+                    if(stringValue.charCodeAt(i) > 127 || stringValue.charCodeAt(i) == 94){
+                      len += 2;
+                    }else{
+                      len ++;
+                    }
+                  }
+
+                  if(len >= 4 && len <= 16){
+                    var nextNode = document.getElementById('valueNull');
+
+                    textLength.className = 'input-message input-Right';
+                    tip.innerText = '字符长度合法';
+                    tip.className = 'tip right';
+                    formDesk.insertBefore(tip,nextNode);
+                  }else{
+                    var nextNode = document.getElementById('valueNull');
+
+                    textLength.className = 'input-message input-Wrong';
+                    tip.innerText = '请输入4~16个字符！';
+                    tip.className = 'tip wrong';
+                    formDesk.insertBefore(tip,nextNode);
+                  }
+                },false);
+            },
+
+            valueNull: function (){
+              var valueNull = document.getElementById('valueNull'),
+                  tip = document.createElement('li');
+
+                  checkTwo.addEventListener('click',function (){
+                    var stringValue = valueNull.value,
+                        len = 0;
+
+                    for(var i = 0;i < stringValue.length; i++){
+                      if(stringValue.charCodeAt(i) > 127 || stringValue.charCodeAt(i) == 94){
+                        len += 2;
+                      }else{
+                        len ++;
+                      }
+                    }
+
+                    if(len >0 ){
+                      var nextNode = document.getElementById('valueEnZh');
+
+                      valueNull.className = 'input-message input-Right';
+                      tip.innertText = '输入字符合法！';
+                      tip.className = 'tip right';
+                      formDesk.insertBefore(tip,nextNode);
+                    }else{
+                      var nextNode = document.getElementById('valueEnZh');
+
+                      valueNull.className = 'input-message input-Wrong';
+                      tip.innerText = '姓名不能为空！';
+                      tip.className = 'tip wrong';
+                      formDesk.insertBefore(tip,nextNode);
+                    }
+                  },false);
+            },
+
+            valueEnZh: function (){
+              var valueEnZh = document.getElementById('valueEnZh'),
+                  tip = document.createElement('li');
+
+                  checkThree.addEventListener('click',function (){
+                    var stringValue = valueEnZh.value,
+                        pattern = /^[\u4e00-\u9fa5][a-zA-Z]+$/;
+
+                    if(pattern.test(stringValue)){
+
+                      valueEnZh.className = 'input-message input-Right';
+                      tip.innerText = '输入字符串格式正确';
+                      tip.className = 'tip right';
+                      formDesk.appendChild(tip);
+                    }else{
+
+                      valueEnZh.className = 'input-message input-Wrong';
+                      tip.innerText = '请输入例如‘百度IFE’格式的字符！';
+                      tip.className = 'tip wrong';
+                      formDesk.appendChild(tip);
+                    }
+                  },false);
             }
         };
 
-        checkOne.onclick=function (){
-            validation.valueLength();
-        }
+        //方法一
+        validation.valueLength();
+
+        //方法二
+        validation.valueNull();
+
+        //方法三
+        validation.valueEnZh();
     })();
   </script>
 </html>
