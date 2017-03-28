@@ -10,11 +10,35 @@
         margin: 100px auto auto auto;
         border: 1px solid red;
       }
+      #rString{
+        width: 150px;
+        height: 40px;
+        margin: 40px 50px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-
+        <input type="text" name="name" value="" id="rString">
+        <button type="button" name="button" id="getString">确认</button>
     </div>
   </body>
+  <script type="text/javascript">
+    (function (){
+        var getString = document.getElementById('getString'),
+            rString = document.getElementById('rString');
+
+        getString.addEventListener('click',function (){
+            var stringValue = rString.value,
+                patternNumber = /^1[3578][0-9]{9}$/,
+                patterString = /\b([A-Za-z]+)\s+\1\b/;
+
+            if(patternNumber.test(stringValue) || patterString.test(stringValue)){
+                  alert('格式正确！');
+            }else{
+              alert('请输入11位手机号或英文字符串！');
+            }
+        },false);
+    })();
+  </script>
 </html>
