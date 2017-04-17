@@ -123,7 +123,6 @@
 	function preorder(node){
 		if(!!node){//转换为布尔值
 				divlist.push(node);
-				console.log(node.innerHTML);
 				preorder(node.firstElementChild);
 				preorder(node.lastElementChild);
 			}
