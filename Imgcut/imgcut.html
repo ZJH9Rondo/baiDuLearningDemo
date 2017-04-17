@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>HTML5 Crop Image</title>
+</head>
+<style type="text/css">
+    body{text-align:center;}
+    #label{
+        border:1px solid #ccc;
+        background-color:#fff;
+        text-align:center;height:300px;
+        width:300px;
+        margin:20px auto;
+        position:relative;
+    }
+
+    #get_image{position:absolute;}
+
+    #edit_pic{position:absolute;display:none;background:#000;}
+    
+    #cover_box{position: absolute;z-index: 9999;display:none;top:0px;left:0px;}
+    
+    #show_edit{margin: 0 auto;display:inline-block;}
+    
+    #show_pic{overflow:hidden;margin:0 auto;display:inline-block; }
+
+    .resize{width:100px;height: 0;border: 1px solid red;margin-left: auto;margin-right: auto;position: relative;}
+
+    #resize_cut{width: 10px;height: 10px;background: green;position: absolute;border-radius: 50%;margin-top: -4px;}
+</style>
+<body>
+<input type="file" name="file" id="post_file">
+<button id="save_button">SAVE</button>
+
+
+<div id="label">
+    <canvas id="get_image"></canvas>
+    <p>
+        <canvas id="cover_box"></canvas>
+        <canvas id="edit_pic"></canvas>
+    </p>
+</div>
+<div class="resize" id="resize">
+        <div id="resize_cut"></div>
+</div>
+
+
+
+<p>
+    <span id="show_edit"></span>
+    <span id="show_pic"><img src=""></span>
+</p>
+
+</body>
+<script type="text/javascript" src="imgcut.js"></script>
+</html>
