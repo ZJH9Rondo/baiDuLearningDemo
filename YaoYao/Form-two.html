@@ -182,14 +182,14 @@
                       stopEvent(event);   //阻止默认事件
 
                       type = validation.getRule(this.name);
-                      console.log(type);
+  
                       while(tips.nodeType != 1){
                         tips = tips.nextSibling;
                       }
-console.log(type.check(value));
+
                       if(type.check(value)){
                           tips.style.color = 'green';
-                          tips.innerHTML = '所输入信息合法';
+                          tips.innerHTML = '输入信息合法';
                       }else{
                           tips.style.color = 'red';
                           tips.innerHTML = type.eormsg;
