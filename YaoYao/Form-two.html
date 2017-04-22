@@ -121,7 +121,8 @@
               return {
                 getRule: function (name){
 
-                    return checkRules.name;
+                    var target = name;
+                    return checkRules[target];
                 }
               }
           };
@@ -192,7 +193,7 @@
 
                       if(type.check(value)){
                           tips.style.color = 'green';
-                          tips.innerHTML = '信息合法';
+                          tips.innerHTML = '所输入信息合法';
                       }else{
                           tips.style.color = 'red';
                           tips.innerHTML = type.eormsg;
