@@ -96,13 +96,10 @@
 
                   number: {
                     check: function (value){
-                            if (value.length < 8 || value.length > 20) {
-
+                            if(value){
+                              return isValidatedPattern(value, /\d{8}/);
+                            }
                             return false;
-                          }else {
-                            // Check the password strength enough.
-                            return isValidatedPattern(value, /(?=[A-Za-z0-9]{8,20})(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+/);
-                          }
                       },
 
                       eormsg: '请输入8位有效学号！'
@@ -110,8 +107,10 @@
 
                   Email: {
                     check: function (value){
-
-                          return isValidatedPattern(value,/^([a-zA-Z0-9]+[_|-|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|-|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,3}$/);
+                            if(value){
+                              return isValidatedPattern(value,/^([a-zA-Z0-9]+[_|-|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|-|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,3}$/);
+                            }
+                            return false;
                     },
 
                   eormsg: '请输入正确有效的邮箱地址！'
@@ -132,7 +131,7 @@
               var regex = pattern,
                   state;
 
-                  state =  regex.test(pattern);
+                  state =  regex.test(value);
               // 返回比对的状态值，判断字符串是否合法
               return state;
           };
@@ -174,23 +173,20 @@
                     type;
 
                 for(var i = 0;i < form.length ; i++){
-                    form[i].addEventListener('focus',function (event){
-                        var validation = new Validation;
-
-                        stopEvent(event);   //阻止默认事件
-                        type = validation.getRule(this.name);
-                    },false);
 
                     form[i].addEventListener('blur',function (){
                       var value = this.value,
-                          tips = this.nextSibling;
+                          tips = this.nextSibling,
+                          validation = new Validation;
 
                       stopEvent(event);   //阻止默认事件
 
+                      type = validation.getRule(this.name);
+                      console.log(type);
                       while(tips.nodeType != 1){
                         tips = tips.nextSibling;
                       }
-
+console.log(type.check(value));
                       if(type.check(value)){
                           tips.style.color = 'green';
                           tips.innerHTML = '所输入信息合法';
