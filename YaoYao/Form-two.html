@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>表单联动校验</title>
+    <style media="screen">
+      *{
+        margin: 0;
+        padding: 0;
+      }
+      body{
+        font-family: sans-serif;
+      }
+      .container{
+        width: 100%;
+        height: 100%;
+      }
+      .page{
+        width: 280px;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 100px;
+      }
+      .personInf>input{
+        width: 200px;
+        height: 30px;
+        border: 1px solid rgba(52,55,57,1);
+        border-radius: 5px;
+        margin-top: 5px;
+      }
+      .tips{
+        width: 100%;
+        height: 16px;
+        font-size: 8px;
+        padding-left: 35px;
+      }
+      #subForm{
+        width: 50px;
+        height: 25px;
+        background: rgba(63, 137, 212, 1);
+        border: 0;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        margin-top: 10px;
+        margin-left: 180px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page">
+        <form class="personInf" id="signform">
+          <label>姓名</label>
+          <input type="text" name="name">
+          <p class="tips"></p>
+          <label>学号</label>
+          <input type="text" name="number">
+          <p class="tips"></p>
+          <label>邮箱</label>
+          <input type="text" name="Email">
+          <p class="tips"></p>
+        </form>
+        <button type="button" name="button" id="subForm">提交</button>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    /*
+    * 表单联动组件，兼容性处理 FireFox Opera IE Chrome
+    * 校验表单
+    */
+    (function (){
+
+         //表单校验接口
+        var formCheck = function (){
+          var subButton = document.getElementById('subForm'),
+              subFlag = 0; // 提交检测参数（全局检测）
+
+          //校验规则
+          var Validation = function(){
+              var checkRules = {
+
+                  name: {
+                    check: function (value){
+                          if((value.length>3)){
+                            return true;
+                          }else{
+                            return false;
+                          }
+                      },
+
+                      eormsg: '姓名格式有误！请重新填写'
+                  },
+
+                  number: {
+                    check: function (value){
+                            if (value.length < 8 || value.length > 20) {
+
+                            return false;
+                          }else {
+                            // Check the password strength enough.
+                            return isValidatedPattern(value, /(?=[A-Za-z0-9]{8,20})(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+/);
+                          }
+                      },
+
+                      eormsg: '请输入8位有效学号！'
+                  },
+
+                  Email: {
+                    check: function (value){
+
+                          return isValidatedPattern(value,/^([a-zA-Z0-9]+[_|-|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|-|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,3}$/);
+                    },
+
+                  eormsg: '请输入正确有效的邮箱地址！'
+                }
+              };
+
+              return {
+                getRule: function (name){
+
+                    return checkRules.name;
+                }
+              }
+          };
+
+          //  绑定校验方法到表单元素
+          var isValidatedPattern = function (value,pattern){
+              var regex = pattern,
+                  state;
+
+                  state =  regex.test(pattern);
+              // 返回比对的状态值，判断字符串是否合法
+              return state;
+          };
+
+          function formIn(){
+              var form = document.getElementById('signform'),
+                  inputList = [];
+
+              var inputArr = form.getElementsByTagName('input');
+
+              for(var i = 0; i < inputArr.length; i++){
+                  if(inputArr[i].name !== undefined){
+
+                    // 检索表单有效性再装入数组
+                    inputList.push(inputArr[i]);
+                  }else{
+                    alert('表单name属性不能为空！');
+                  }
+              }
+
+              return inputList;
+          }
+
+          // 阻止默认事件
+          function stopEvent(event){
+            var e=event || window.event;
+
+            if(e.preventDefault){
+                e.preventDefault();
+            }else{
+                e.returnValue=false;  //IE
+            }
+          }
+
+          //自执行方法
+          return {
+            checkMethod: function (){
+                var form = formIn(),   //获取表单
+                    type;
+
+                for(var i = 0;i < form.length ; i++){
+                    form[i].addEventListener('focus',function (event){
+                        var validation = new Validation;
+
+                        stopEvent(event);   //阻止默认事件
+                        type = validation.getRule(this.name);
+                    },false);
+
+                    form[i].addEventListener('blur',function (){
+                      var value = this.value,
+                          tips = this.nextSibling;
+
+                      stopEvent(event);   //阻止默认事件
+
+                      while(tips.nodeType != 1){
+                        tips = tips.nextSibling;
+                      }
+
+                      if(type.check(value)){
+                          tips.style.color = 'green';
+                          tips.innerHTML = '信息合法';
+                      }else{
+                          tips.style.color = 'red';
+                          tips.innerHTML = type.eormsg;
+                      }
+                    },false);
+                }
+            }
+          };
+        }();
+
+        formCheck.checkMethod(); //方法调用
+    })();
+  </script>
+</html>
