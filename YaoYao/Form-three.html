@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>表单联动-三</title>
+  </head>
+  <style media="screen">
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .container{
+      width: 100%;
+      height: 100%;
+    }
+    .page{
+      width: 450px;
+      height: 400px;
+      border: 1px solid black;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 100px;
+      position: relative;
+    }
+    /*
+    * 隐藏原有的
+    */
+    .page input[type = "checkbox"]{
+      /*
+      * 不应该用 display: none
+      */
+      position: absolute;
+      clip: rect(0,0,0,0);
+    }
+    /*
+    * 利用伪元素来自定义checkbox
+    * lable标签关联
+    * 规范起见： input[type = "checkbox"] 不可缺
+    */
+
+    input[type="checkbox"]+label {
+        display: inline-block;
+        width: 48%;
+        height: auto;
+        font-size: 16px;
+        margin-top: 10px;
+        margin-left: 5px;
+        text-align: left;
+        -webkit-box-sizing: border-box;
+    }
+
+    label::before {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-right: 8px;
+        border: 1px solid black;
+        background: #ffffff;
+        vertical-align: middle;
+        -webkit-border-radius: 50%;
+        -webkit-box-sizing:border-box;
+    }
+    /*
+    * 自定义选中样式
+    * 利用css3的 :checked 伪类模拟选中状态
+    */
+    .page input[type = "checkbox"]:checked + label::before{
+      border: 4px solid blue;
+    }
+
+    /*
+    * 选择表单控件样式
+    */
+    #where,#school{
+      width: 150px;
+      height: 30px;
+      margin-top: 20px;
+      margin-left: 10px;
+    }
+
+    #unschool{
+      width: 200px;
+      height: 30px;
+      margin-left: 40px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+  <body>
+  <div class="container">
+    <div class="page">
+      <input type="checkbox" id="checkbox01">
+      <label for="checkbox01">在校生</label>
+      <input type="checkbox" id="checkbox02">
+      <label for="checkbox02">非在校生</label>
+      <select id="where">
+          <option value="beijing">北京</option>
+          <option value="shanghai">上海</option>
+          <option value="shenzhen">深圳</option>
+      </select>
+      <select id="school">
+          <option>北京大学</option>
+          <option>清华大学</option>
+          <option>北京航空航天大学</option>
+      </select>
+      <input type="text" name="name" id="unschool">
+    </div>
+  </div>
+  </body>
+  <script type="text/javascript">
+    (function (){
+      /*
+      * 操作  select的原生js方法是关键，对于Nodetype的操作方法限制
+      */
+        (function (){
+
+          // 获取对应学校方法
+          var selectSchool = function (){
+            var schools = {
+
+                beijing: function (value){
+                   var schoolist = value;
+
+                   return schoolist;
+                },
+
+                shanghai: function (value){
+                    var schoolist = value;
+
+                    return schoolist;
+                },
+
+                shenzhen: function (value){
+                    var schoollist = value;
+
+                    return schoollist;
+                }
+              };
+            return {
+              getSchool: function (addName){
+                return schools[addName];
+              }
+            };
+          };
+
+          function method(){
+              var where = document.getElementById('where'),
+                  school = document.getElementById('school'),
+                  checkbox01 = document.getElementById('checkbox01'),
+                  checkbox02 = document.getElementById('checkbox02'),
+                  unschool = document.getElementById('unschool'),
+                  schoollist = [];
+
+                where.addEventListener('change',function (event){
+                    var e = event || window.event;
+                    var selectItem = e.target || e.srcElement;
+
+                    var addName = selectItem.value,
+                        schools = new selectSchool(), //构造函数
+                        type,
+                        options = school.getElementsByTagName('option');
+
+                        // value 可作为组件的数据入口
+                        value = ['同济大学','上海交通大学','上海大学','复旦大学','上海海事大学'];
+
+                    type = schools.getSchool(addName);
+                    schoollist = type(value); // 获取所属学校列表数据
+
+                    for(var j = 0; j < schoollist.length; j++){
+                        if(j >= options.length){
+                          var option = document.createElement('option');
+
+                          option.innerHTML = schoollist[j];
+                          school.add(option);
+                        }else{
+                          school.options[j].innerHTML = schoollist[j];
+                        }
+                    }
+                },false);
+
+            //选项卡
+            checkbox01.addEventListener('click',function (){
+              if(checkbox02.checked){
+                checkbox02.checked = false;
+              }
+
+                school.style.display = where.style.display = 'inline-block';
+                unschool.style.display = 'none';
+            },false);
+
+            checkbox02.addEventListener('click',function (){
+              if(checkbox01.checked){
+                checkbox01.checked = false;
+              }
+
+                school.style.display = where.style.display = 'none';
+                unschool.style.display = 'block';
+
+            },false);
+          }
+
+          // 执行方法
+          method();
+        })();
+    })();
+  </script>
+</html>
